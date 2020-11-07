@@ -1,0 +1,48 @@
+# Project Information
+site_name:  z4fwiki
+site_description: zero4fun's wiki
+site_author: zero4fun team
+site_url: https://zero4fun.github.io/z4fwiki/
+
+# Copyright
+copyright: 'Copyright &copy; 2020 - 2020 zero4fun team'
+
+# Contents
+nav:
+  - 简介: index.md
+  - 例题:
+    - pwn:
+      - 整数溢出: 
+        - int_overflow: Instance/pwn/integer_overflow/int_overflow.md
+    - web:
+      - sql注入:
+        - supersqli: Instance/web/sql_inject/supersqli.md
+  - 题型:
+    - pwn:
+      - 整数溢出: TypesofChallenge/pwn/integer_overflow.md
+    - web:
+      - SSTI模板注入: TypesofChallenge/web/SSTI.md
+  - 相关知识:
+    - pwn:
+      - gdb: RelatedKnowledge/pwn/gdb.md
+    - 编程语言:
+      - sql: RelatedKnowledge/ProgramLanguage/SQL.md
+  - 工具: Utils/Utils.md
+  - FAQ: FAQ/FAQ.md
+
+# Theme
+theme:
+  name: 'material'
+  language: 'zh'
+  palette:
+    primary: 'white'
+    accent: 'red'
+    scheme: preference
+  
+  icon:
+    logo: 'material/school'
+  features:
+    - navigation.tabs
+  font:
+    text: 'Noto Sans'
+    code: 'Source Code Pro'
