@@ -1,0 +1,1052 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="zero4fun's wiki">
+      
+      
+      
+        <link rel="canonical" href="https://zero4fun.github.io/z4fwiki/RelatedKnowledge/pwn/gdb/">
+      
+      
+        <meta name="author" content="zero4fun team">
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
+    
+    
+      
+        <title>gdb - z4fwiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2cb7adb3.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.f0267088.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ffffff">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:300,400,400i,700%7CSource+Code+Pro&display=fallback">
+        <style>body,input{font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Source Code Pro",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="white" data-md-color-accent="red">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gdb" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://zero4fun.github.io/z4fwiki/" title="z4fwiki" class="md-header-nav__button md-logo" aria-label="z4fwiki">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            z4fwiki
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              gdb
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+
+  
+
+<nav class="md-tabs md-tabs--active" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="../../.." class="md-tabs__link">
+        简介
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    
+    
+  
+  
+    
+    
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Instance/pwn/integer_overflow/int_overflow/" class="md-tabs__link">
+          例题
+        </a>
+      
+    </li>
+  
+
+  
+
+  
+
+      
+        
+  
+  
+    
+    
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../TypesofChallenge/pwn/integer_overflow/" class="md-tabs__link">
+          题型
+        </a>
+      
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+    
+    
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="./" class="md-tabs__link md-tabs__link--active">
+          相关知识
+        </a>
+      
+    </li>
+  
+
+  
+
+      
+        
+      
+        
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://zero4fun.github.io/z4fwiki/" title="z4fwiki" class="md-nav__button md-logo" aria-label="z4fwiki">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+
+    </a>
+    z4fwiki
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." class="md-nav__link">
+      简介
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      例题
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="例题" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        例题
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-1" type="checkbox" id="nav-2-1">
+    
+    <label class="md-nav__link" for="nav-2-1">
+      pwn
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="pwn" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-1">
+        <span class="md-nav__icon md-icon"></span>
+        pwn
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-1-1" type="checkbox" id="nav-2-1-1">
+    
+    <label class="md-nav__link" for="nav-2-1-1">
+      整数溢出
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="整数溢出" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-1-1">
+        <span class="md-nav__icon md-icon"></span>
+        整数溢出
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Instance/pwn/integer_overflow/int_overflow/" class="md-nav__link">
+      int_overflow
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-2" type="checkbox" id="nav-2-2">
+    
+    <label class="md-nav__link" for="nav-2-2">
+      web
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="web" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-2">
+        <span class="md-nav__icon md-icon"></span>
+        web
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-2-1" type="checkbox" id="nav-2-2-1">
+    
+    <label class="md-nav__link" for="nav-2-2-1">
+      sql注入
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="sql注入" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-2-1">
+        <span class="md-nav__icon md-icon"></span>
+        sql注入
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Instance/web/sql_inject/supersqli/" class="md-nav__link">
+      supersqli
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      题型
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="题型" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        题型
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1">
+    
+    <label class="md-nav__link" for="nav-3-1">
+      pwn
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="pwn" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-1">
+        <span class="md-nav__icon md-icon"></span>
+        pwn
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../TypesofChallenge/pwn/integer_overflow/" class="md-nav__link">
+      整数溢出
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      web
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="web" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        <span class="md-nav__icon md-icon"></span>
+        web
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../TypesofChallenge/web/SSTI/" class="md-nav__link">
+      SSTI模板注入
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      相关知识
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="相关知识" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        相关知识
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+    
+    <label class="md-nav__link" for="nav-4-1">
+      pwn
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="pwn" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-1">
+        <span class="md-nav__icon md-icon"></span>
+        pwn
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        gdb
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      gdb
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一、安装
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二、常用命令
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    三、技巧
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#peda" class="md-nav__link">
+    四、peda命令
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-2" type="checkbox" id="nav-4-2">
+    
+    <label class="md-nav__link" for="nav-4-2">
+      编程语言
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="编程语言" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-2">
+        <span class="md-nav__icon md-icon"></span>
+        编程语言
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../ProgramLanguage/SQL/" class="md-nav__link">
+      sql
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../Utils/Utils/" class="md-nav__link">
+      工具
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../FAQ/FAQ/" class="md-nav__link">
+      FAQ
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一、安装
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二、常用命令
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    三、技巧
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#peda" class="md-nav__link">
+    四、peda命令
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="gdb">gdb</h1>
+<h2 id="_1">一、安装</h2>
+<pre><code>sudo apt-get install gdb
+// 需要调试其他架构下的elf程序时
+sudo apt-get install gdb-multiarch
+</code></pre>
+<p>还可以从github上下载一些插件，peda、gef、pwndbg。</p>
+<h2 id="_2">二、常用命令</h2>
+<pre><code>gdb program -q // 安静模式调试程序
+quit // 退出调试器
+run(r) arguments // 运行被调试程序，带参数
+attach pid // 调试进程号为pid的进程
+detach // 脱离进程
+break(b) *address // 下断点
+b function_name // 在函数处下断点
+tbreak // 设置临时断点，第一次命中后会自动删除，用法同break
+break … if cond // 设置条件断点
+watch(wa) v // 设置观察点，如果程序中的变量v改变，程序将中断
+watch *(data type*)address // 如果内存地址address处改变，程序将中断
+watch expr thread threadnum // 只观察对应线程的变量值变化，如果变化程序中断
+rwatch(rw) // 设置读观察点，如果程序中的变量或者内存被读取，程序将中断
+awatch(aw) // 设置读写观察点，如果变量或者地址被读取或者改变，程序将中断
+catch fork/vfork/exec // 为fork、vfork、exec函数设定catchpoint，遇到这些函数时程序将暂停
+catch syscall name|num // 当发生对应name或num系统调用时，程序暂停
+ignore bnum count // 忽略断点，bnum为断点编号，count表示之后count次触发断点都将忽略
+info b // 查看断点
+info display // 打印自动显示的表达式列表
+info threads // 打印出所有线程的信息
+info frame // 打印出指定栈帧的详细信息
+info proc // 查看proc里的进程信息
+info functions // 列出可执行文件的所有函数名
+info proc mappings // 查看进程的内存映射信息
+info files/target // 更详细地输出进程的内存信息，包括引用的动态链接库等等
+delete number // 删除某个断点
+stepi(si) // 单步步入
+nexti(ni) // 单步步过
+continue(c) // 继续执行
+finish // 执行到函数返回处
+info register // 查看寄存器
+i all-registers // 查看所有寄存器
+backtrace(bt) // 打印函数调用栈回溯
+print(p) /x expr/file::v // 计算表达式expr的值并打印，打印file文件的变量值，格式为o（八进制）、d（十进制）、x（十六进制）、u（无符号十六进制）、t（二进制）、f（浮点数）、a（地址）、c（字符）
+x/CountFormatSize address // 以指定格式Format打印address处指定大小Size、指定数量Count的对象，Size取值，b（字节）、h（半字）、w（字）、g（8字节），Format取值，o（八进制）、d（十进制）、x（十六进制）、u（无符号十进制）、t（二进制）、f（浮点数）、a（地址）、i（指令）、c（字符）、s（字符串）
+display/fmt expr/addr // 每次程序停止时打印表达式的值，格式为o（八进制）、d（十进制）、x（十六进制）、u（无符号十六进制）、t（二进制）、f（浮点数）、a（地址）、c（字符）
+disassemble(disas) // 反汇编代码
+set $reg=value // 修改寄存器的值
+set {type}(address)=value // 修改内存地址address处的值为value，类型为type指定，例如int
+set var variable=expr // 修改代码中的变量值
+shell command // 执行shell命令
+set follow-fork-mode parent|child // 当发生fork时，指示调试器跟踪父进程还是子进程
+handler SIGALRM ignore // 忽视SIGALRM，调试器接收到的SIGALRM信号不会发送到被调试程序
+target remote ip:port // 连接远程调试
+thread apply all bt // 打印出所有线程的堆栈信息
+generate-core-file(gcore) // 将调试中的进程生成内核转储文件
+maint info program-spaces // 打印当前所有被调试的进程信息
+i signals/handle // 查看如何处理进程收到的信号
+handle signal stop/nostop // 设置信号发生时是否暂停程序
+handle signal print/noprint // 设置信号发生时是否打印信号信息
+handle signal pass(noignore)/nopass(ignore) // 设置信号发生时是否把信号丢给程序处理
+</code></pre>
+<h2 id="_3">三、技巧</h2>
+<p>（1）有时候attach到一个进程时可能会出现报错<code>ptrace: Operation not permitted.</code>，这是因为开启了内核参数<code>ptrace_scope</code>，通过查看<code>cat /proc/sys/kernel/yama/ptrace_scope</code>，如果返回值为1表示开启了，此时普通用户进程是无法对其他进程进行attach操作的，解决办法有两个，一个是使用root用户，另一个是关闭，使用命令<code>echo 0 &gt; /proc/sys/kernel/yama/ptrace_scope</code>即可；</p>
+<p>（2）带源码调试方法，使用gcc编译时必须加上-g参数，例如<code>gcc -g test.c -o test</code>，然后就可以使用<code>b 行号</code>来下断点，使用<code>list 开始行号,结束行号</code>来查看源码，或者直接<code>list</code>查看当前执行位置后10行源码；</p>
+<p>（3）进入不带调试信息的函数，有时候调试时无法s进不带调试信息的函数，比如printf，使用命令<code>set step-mode on</code>，即可s进入不带调试信息的函数中；</p>
+<p>（4）退出正在调试的函数，一种是使用finish，这样是执行完该函数并且会打印返回值，也可以使用return命令，这样函数就不会继续执行下去，而是跳过当前函数，直接到返回的位置，可以带返回值<code>return expr</code>，这样就直接指定了函数返回值，在调试的时候比较有用；</p>
+<p>（5）可以使用<code>call func</code>或<code>print func</code>直接调用函数执行；</p>
+<p>（6）可以使用<code>frame n</code>切换堆栈帧层级，使用<code>up n</code>向上切换n层堆栈帧，使用<code>down n</code>向下切换n层堆栈帧；</p>
+<p>（7）对于没有调试信息的程序，如果不知道main函数的位置，可以在程序入口处打断点，先通过<code>readelf</code>获得程序入口地址，然后下地址断点即可；</p>
+<p>（8）保存已经设置的断点，当设置断点较多并且不会改变太大时，可以使用命令<code>save breakpoints file-name-to-save</code>将断点信息保存在文件中，下次调试时，使用如下命令批量设置保存的断点，<code>source file-name-to-save</code>；</p>
+<p>（9）有些程序不想被gdb调试，它们就会在程序中调用“ ptrace  ”函数，一旦返回失败，就证明程序正在被
+gdb等类似的程序追踪，所以就直接退出，破解这类程序的办法就是为 ptrace  调用设置 catchpoint  ，通过修改 ptrace  的返回值，达到目的；</p>
+<p>（10）gdb打印数组的默认长度为200个，当需要打印是数组较大时可以使用<code>set print elements number-of-elements</code>设置最大长度，或者<code>set print elements 0</code>设置没有最大限制，或者<code>set print elements unlimited</code>设置没有最大限制；</p>
+<p>（11）打印数组中任意连续元素的值，使用<code>p array[index]@num</code>，index为数组索引，表示打印开始处，num为打印的个数；</p>
+<p>（12）默认不打印数组的索引下标，可以设置<code>set print array-indexes on</code>打印索引下标；</p>
+<p>（13）打印局部变量，一个是使用<code>bt full</code>，打印所有局部变量的值，另一个是使用<code>info locals</code>，打印当前函数的局部变量；</p>
+<p>（14）查看变量类型，使用<code>whatis v</code>，查看详细变量类型信息使用<code>ptype v</code>；</p>
+<p>（15）默认情况打印结构体比较混乱，可以设置<code>set print pretty on</code>，就能分行显示结构体每一个变量；</p>
+<p>（16）打印对象时，可以使用<code>set print object on</code>，按照派生类型打印对象；</p>
+<p>（17）指定程序的输入输出设备，先打开一个终端，使用<code>tty</code>命令查看终端号，然后使用命令指定输入输出设备<code>gdb -tty /dev/pts/2 ./a.out</code>，或者在gdb命令行下使用<code>tty /dev/pts/2</code>，<code>/dev/pts/2</code>为对应终端设备号；</p>
+<p>（18）" x  "命令会把最后检查的内存地址值存在“ $_  ”这个变量中，并且会把这个地址中的内容放在“ $__  ”这个变量中，有些隐式调用“ x ”命令的命令也会出现这种情况，比如info line或info b，使用p $_和p $__就可以打印两个值；</p>
+<p>（19）如果需要同时调试父子进程，可以设置<code>set detach-on-fork off</code>，这样gdb就能同时调试父子进程，并且在调试一个进程时，另外一个进程处于挂起状态，如果想让父子进程都同时运行，可以使用<code>set schedule-multiple on</code>；</p>
+<p>（20）只允许一个线程运行，设置<code>set scheduler-locking on</code>；</p>
+<p>（21）$_thread变量保存当前正在调试的线程号；</p>
+<p>（22）一个会话中同时调试多个程序，首先调试a程序，然后使用命令<code>add-inferior [ -copies n ] [ -exec executable ]</code>加载另一个程序，n默认为1，也可以使用命令<code>clone-inferior [ -copies n ] [ infno ]</code>克隆现有的程序，使用<code>i inferiors</code>，查看本次会话有多少程序，使用<code>inferior num</code>命令切换进程；</p>
+<p>（23）当被调试的程序正常退出时，gdb会使用 $_exitcode  变量记录程序退出时的“ exit code  ”；</p>
+<p>（24）调试core dump文件，使用命令<code>gdb path/to/the/executable path/to/the/coredump</code>，也可以gdb起来后加载程序和core，使用file加载程序，使用core加载core dump；</p>
+<p>（25）设置汇编指令格式，默认是AT&amp;T格式，使用<code>set disassembly-flavor intel</code>可以改为intel格式，使用att可以改回，目前“set disassembly-flavor”命令只能用在Intel x86处理器上，并且取值只有“intel”和“att”；</p>
+<p>（26）<code>b func</code>与<code>b *func</code>的区别，前者会断在函数起实际作用的第一条汇编语句，而后者会断在函数的第一条汇编语句；</p>
+<p>（27）在任意情况下反汇编后面要执行的代码，设置<code>set disassemble-next-line on</code>，如果要在后面的代码没有源码的情况下才反汇编后面要执行的代码，设置<code>set disassemble-next-line auto</code>，关闭这个功能，设置<code>set disassemble-next-line off</code>；</p>
+<p>（28）将源程序和汇编指令映射起来，使用命令<code>disas /m fun</code>；</p>
+<p>（29）显示将要执行的汇编指令，使用命令<code>display /ni $pc</code>显示当程序停止时，将要执行的n条汇编指令，取消可以使用<code>undisplay</code>；</p>
+<p>（30）打印单个寄存器的值，<code>i registers regname</code>或<code>p $regname</code>；</p>
+<p>（31）缺省情况下gdb是以只读方式加载程序的，可以设置为可写，命令为<code>gdb -write ./exec</code>，也可以在gdb命令中设置并重新加载程序<code>set write on</code>；</p>
+<p>（32）PC寄存器会存储程序下一条要执行的指令的地址，可以修改PC寄存器的值，控制程序执行流，命令为<code>set var $pc=address</code>；</p>
+<p>（33）command breaknum，在断点breaknum处中断时需要执行的命令，之后需要输入命令，使用end结束命令；</p>
+<p>（34）可以使用$_siginfo变量来获取当前信号的一些信息；</p>
+<p>（35）显示共享链接库信息，使用<code>info sharedlibrary regex</code>命令可以显示程序加载的共享链接库信息，其中 regex  可以是正则表达式，意为显示名字符合 regex  的共享链接库，如果没有 regex  ，则列出所有的库，带“ *  ”表示库缺少调试信息；</p>
+<p>（36）设置按何种方式解析脚本，<code>set script-extension off/soft/strict</code>，off表示所有的脚本文件都解析成gdb的命令脚本， soft表示根据脚本文件扩展名决定如何解析脚本，如果gdb支持解析这种脚本语言，就按这种语言解析，否则就按命令脚本解析，strict表示根据脚本文件扩展名决定如何解析脚本，如果gdb支持解析这种脚本语言，就按这种语言解析，否则不解析；</p>
+<p>（37）保存历史命令，<code>set history save on</code>；</p>
+<p>（38）设置源文件查找路径，<code>directory path</code>；</p>
+<p>（39）进入和退出图形界面，gdb时使用-tui参数，或者gdb运行过程中使用<code>Crtl+X+A</code>组合键，退出相同；</p>
+<p>（40）使用图形界面时可以使用命令显示汇编代码窗口，<code>layout asm</code>，如果既想显示汇编代码又想显示源码可以使用命令<code>layout split</code>，使用<code>layout regs</code>显示寄存器窗口，使用<code>tui reg float</code>显示浮点寄存器窗口，使用<code>tui reg system</code>显示系统寄存器窗口，如果想切换回通用寄存器可以使用<code>tui reg general</code>命令；</p>
+<p>（41）一些命令的缩写：</p>
+<pre><code>b -&gt; break
+c -&gt; continue
+d -&gt; delete
+f -&gt; frame
+i -&gt; info
+j -&gt; jump
+l -&gt; list
+n -&gt; next
+p -&gt; print
+r -&gt; run
+s -&gt; step
+u -&gt; until
+aw -&gt; awatch
+bt -&gt; backtrace
+dir -&gt; directory
+disas -&gt; disassemble
+fin -&gt; finish
+ig -&gt; ignore
+ni -&gt; nexti
+rw -&gt; rwatch
+si -&gt; stepi
+tb -&gt; tbreak
+wa -&gt; watch
+win -&gt; winheight
+</code></pre>
+<p>（42）不离开gdb直接执行shell命令，使用<code>shell command</code>或者<code>!command</code>感叹号后不能有空格；</p>
+<p>（43）设置被调试程序的参数，<code>gdb -args ./a.out a b c</code>，或者<code>(gdb) set args a b c</code>，显示参数<code>show args</code>，也可以在程序运行时直接指定，<code>r a b c</code>，如果想让参数为空，直接<code>set args</code>；</p>
+<p>（44）设置程序运行时的环境变量，<code>set env varname=value</code>，例如：</p>
+<pre><code>set env LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0
+</code></pre>
+<p>（45）使用<code>apropos regexp</code>命令查找所有符合 regexp  正则表达式的命令信息；</p>
+<p>（46）可以使用<code>set logging on</code>把执行gdb的过程记录下来，默认保存在gdb.txt中；</p>
+<h2 id="peda">四、peda命令</h2>
+<p>（1）aslr，显示/设置 gdb 的 ASLR；</p>
+<p>（2）asmsearch，在内存中搜索反汇编代码，例如：</p>
+<pre><code>asmsearch &quot;int 0x80&quot;
+asmsearch &quot;add esp, ?&quot; libc
+</code></pre>
+<p>（3）assemble，直接执行一些汇编指令，end结束；</p>
+<p>（4）checksec，检查二进制文件的安全选项；</p>
+<p>（5）cmpmem，比较一段内存与一个文件，例如：</p>
+<pre><code>cmpmem 0x08049000 0x0804a000 data.mem
+</code></pre>
+<p>（6）distance，计算两个地址之间的距离；</p>
+<p>（7）dumpargs，在调用指令停止时显示传递给函数的参数；</p>
+<p>（8）dumprop，在特定的内存范围显示 ROP gadgets；</p>
+<p>（9）elfheader，获取正在调试的 ELF 文件的头信息；</p>
+<p>（10）elfsymbol，从 ELF 文件中获取没有调试信息的符号信息；</p>
+<p>（11）jmpcall，在内存中搜索jmp/call指令，例如：</p>
+<pre><code>jmpcall
+jmpcall eax
+jmpcall esp libc
+</code></pre>
+<p>（12）loadmem，将一个文件加载到指定内存，例如：</p>
+<pre><code>loadmem stack.mem 0xbffdf000
+</code></pre>
+<p>（13）lookup，搜索属于内存范围的地址的所有地址/引用；</p>
+<p>（14）nextcall，一直步入执行到 call 指令，nextjmp，一直步入执行到 j 指令；</p>
+<p>（15）patch，</p>
+<p>（16）pattern，生成，搜索或写入循环 pattern 到内存；</p>
+<p>（17）procinfo，显示调试进程的 /proc/pid/；</p>
+<p>（18）pshow，显示各种 PEDA 选项和其他设置，pset，设置各种 PEDA 选项和其他设置；</p>
+<p>（19）readelf，获取文件头、段信息；</p>
+<p>（20）ropgadget，获取二进制或库的常见 ROP gadgets；</p>
+<p>（21）ropsearch，搜索内存中的 ROP gadgets；</p>
+<p>（22）searchmem|find，搜索内存中的 pattern，支持正则表达式搜索；</p>
+<p>（23）shellcode，生成或下载常见的 shellcode，例如：</p>
+<pre><code>shellcode x86/linux exec
+</code></pre>
+<p>（24）skeleton，生成 python exploit 代码模板，例如：</p>
+<pre><code>skeleton argv exploit.py
+</code></pre>
+<p>（25）stepuntil，步入直到遇见指定的汇编代码，例如：</p>
+<pre><code>stepuntil cmp
+</code></pre>
+<p>（26）strings，显示内存中可打印的字符串；</p>
+<p>（27）vmmap，在调试过程中获取段的虚拟映射地址范围；</p>
+<pre><code>vmmap libc
+vmmap stack
+vmmap binary
+</code></pre>
+<p>（28）xormem，用一个 key 来对一个内存区域执行 XOR 操作，例如：</p>
+<pre><code>xormem 0x08049000 0x0804a000 “thekey”
+</code></pre>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../../../TypesofChallenge/web/SSTI/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  上一页
+                </span>
+                SSTI模板注入
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../ProgramLanguage/SQL/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  下一页
+                </span>
+                sql
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2020 - 2020 zero4fun team
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: ['navigation.tabs'],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
