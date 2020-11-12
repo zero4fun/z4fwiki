@@ -20,7 +20,7 @@
 
 一般会实现收集好一些模板注入常规的payload，如{{ 7+7 }} or {7+7}，看页面上输出的内容是否为49。然后根据模板的种类选择payload。各个模板对应的paylaod如下
 
-[pic](https://p5.ssl.qhimg.com/t01f4792c7d03dd49cc.png)
+![](./img/SSTI1.png)
 
 ### 2、代码审计
 

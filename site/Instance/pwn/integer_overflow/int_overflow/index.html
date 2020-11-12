@@ -226,8 +226,30 @@
 
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../../Utils/Utils/" class="md-tabs__link">
+          工具
+        </a>
+      
+    </li>
+  
+
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../../FAQ/FAQ/" class="md-tabs__link">
+          FAQ
+        </a>
+      
+    </li>
+  
+
       
     </ul>
   </div>
@@ -391,6 +413,18 @@
   
 </nav>
     
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../hero/" class="md-nav__link">
+      hero
+    </a>
   </li>
 
         
@@ -682,10 +716,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      工具
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="工具" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        工具
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../../Utils/Utils/" class="md-nav__link">
-      工具
+      其他
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -694,10 +754,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      FAQ
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="FAQ" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        FAQ
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../../FAQ/FAQ/" class="md-nav__link">
-      FAQ
+      使用手册
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -753,14 +839,14 @@
                 
                 <h1 id="int_overflow">int_overflow</h1>
 <h2 id="_1">一、审题</h2>
-<p><img alt="" src="/1.PNG" /></p>
+<p><img alt="" src="../img/int_overflow1.PNG" /></p>
 <h2 id="_2">二、解题思路</h2>
 <p>1、考点为整数溢出，先checksec看看保护情况，32位，got表可写，没有栈溢出保护，堆栈不可执行，代码段加载地址固定；</p>
-<p><img alt="" src="/2.PNG" /></p>
+<p><img alt="" src="../img/int_overflow2.PNG" /></p>
 <p>2、使用ida打开程序，查看伪代码，main函数中主要有两个功能，exit不用看，重点看login，在login函数中需要输入username（最长0x19）和password（最长0x199），此处不存在缓冲区溢出，再进一步看check_passwd函数，发现存在整数溢出点，如下图，v3变量的类型为unsigned __int8，只有一字节的空间，但是s数组的长度最长可达0x199，只需要满足最后一字节在4~8之间即可，这里主要是大到小的类型转换出现截断，并且dest变量的长度只有10字节，可溢出覆盖返回地址；</p>
-<p><img alt="" src="/3.PNG" /></p>
+<p><img alt="" src="../img/int_overflow3.PNG" /></p>
 <p>3、查看存在system语句，如下图，直接将返回地址改为此函数地址即可；</p>
-<p><img alt="" src="/4.PNG" /></p>
+<p><img alt="" src="../img/int_overflow4.PNG" /></p>
 <p>4、exp如下：</p>
 <pre><code class="language-python">from pwn import *
 
@@ -776,9 +862,7 @@ s.sendline(payload)
 s.interactive()
 </code></pre>
 <p>结果如下：</p>
-<p><img alt="" src="/5.PNG" /></p>
-                
-                  
+<p><img alt="" src="../img/int_overflow5.PNG" /></p>
                 
               
               
@@ -812,13 +896,13 @@ s.interactive()
           </a>
         
         
-          <a href="../../../web/sql_inject/supersqli/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../hero/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   下一页
                 </span>
-                supersqli
+                hero
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

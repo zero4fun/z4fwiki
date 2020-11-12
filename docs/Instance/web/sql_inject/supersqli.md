@@ -1,12 +1,8 @@
----
-typora-root-url: img
----
-
 # supersqli
 
 ## 一、审题
 
-![](/13.PNG)
+![](./img/supersqli1.PNG)
 
 ## 二、解题思路
 
@@ -14,13 +10,13 @@ typora-root-url: img
 
 2、观察题目，发现题目中直接给了一个注入框，默认查询为`inject=1`，首先尝试闭合条件，发现使用单引号`'`时报错；
 
-<img src="/14.PNG" alt="	" style="zoom: 50%;" />
+![](./img/supersqli2.PNG)
 
-<img src="/15.PNG" style="zoom:50%;" />
+![](./img/supersqli3.PNG)
 
 3、尝试使用`order by`或`group by`爆破出当前查询的列数，在尝试过程中需要将其后的单引号注释掉，首先尝试`--`注释，发现被过滤，再尝试`#`注释，可行，并爆破出当前查询列数为2，因为一直到3的时候报错了；
 
-<img src="/16.PNG" style="zoom:50%;" />
+![](./img/supersqli4.PNG)
 
 4、尝试使用`union select`爆破数据库信息，但是发现有waf；
 
@@ -40,7 +36,7 @@ typora-root-url: img
 ' union select 1,group_concat(列名) from 列名#
 ```
 
-<img src="/17.PNG" style="zoom:50%;" />
+![](./img/supersqli5.PNG)
 
 5、注意到select关键字被过滤后，可以考虑绕过或者尝试堆叠注入，此处为堆叠注入；
 
@@ -71,4 +67,4 @@ typora-root-url: img
 
 8、此时再使用`1' or 1=1#`，进行为真查询就能够返回最终结果，这里解释一下为什么需要这样做，有了这个相当于where条件一定为真，相当于没有where子句，等价于直接执行select * from table；
 
-<img src="/18.PNG" style="zoom:50%;" />
+![](./img/supersqli6.PNG)

@@ -75,7 +75,7 @@ c、特别注意类型的大小，long long > long = int > short > char；
 
 有符号数的溢出，从负数溢出到正数，绕过验证条件，实现数值的改写，得到flag。
 
-**（3）[wp](D:\study\challenge\网鼎杯\2020\恶龙\hero.md)**
+**（3）[wp](../../Instance/pwn/integer_overflow/hero.md)**
 
 ### 2、攻防世界-PWN新手区-int_overflow
 
@@ -87,7 +87,7 @@ c、特别注意类型的大小，long long > long = int > short > char；
 
 一个size_t到unsigned __int8的隐藏类型转换，导致截断可绕过条件语句，造成栈溢出，改写返回地址。
 
-**（3）[wp](D:\study\challenge\ADworld\pwn\exercise\int_overflow\int_overflow.md)**
+**（3）[wp](../../Instance/pwn/integer_overflow/int_overflow.md)**
 
 ### 3、ZCTF-2016-note3
 

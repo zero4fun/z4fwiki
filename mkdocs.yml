@@ -14,6 +14,7 @@ nav:
     - pwn:
       - 整数溢出: 
         - int_overflow: Instance/pwn/integer_overflow/int_overflow.md
+        - hero: Instance/pwn/integer_overflow/hero.md
     - web:
       - sql注入:
         - supersqli: Instance/web/sql_inject/supersqli.md
@@ -27,8 +28,10 @@ nav:
       - gdb: RelatedKnowledge/pwn/gdb.md
     - 编程语言:
       - sql: RelatedKnowledge/ProgramLanguage/SQL.md
-  - 工具: Utils/Utils.md
-  - FAQ: FAQ/FAQ.md
+  - 工具:
+    - 其他: Utils/Utils.md
+  - FAQ:
+    - 使用手册: FAQ/FAQ.md
 
 # Theme
 theme:

@@ -226,8 +226,30 @@
 
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../Utils/Utils/" class="md-tabs__link">
+          工具
+        </a>
+      
+    </li>
+  
+
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../FAQ/FAQ/" class="md-tabs__link">
+          FAQ
+        </a>
+      
+    </li>
+  
+
       
     </ul>
   </div>
@@ -339,6 +361,18 @@
   <li class="md-nav__item">
     <a href="../../../Instance/pwn/integer_overflow/int_overflow/" class="md-nav__link">
       int_overflow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Instance/pwn/integer_overflow/hero/" class="md-nav__link">
+      hero
     </a>
   </li>
 
@@ -835,10 +869,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      工具
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="工具" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        工具
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../Utils/Utils/" class="md-nav__link">
-      工具
+      其他
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -847,10 +907,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      FAQ
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="FAQ" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        FAQ
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../FAQ/FAQ/" class="md-nav__link">
-      FAQ
+      使用手册
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -1072,7 +1158,7 @@
 <p>2.Http头server返回常见模板，如flask等</p>
 <h4 id="2">（2）常用解题套路</h4>
 <p>一般会实现收集好一些模板注入常规的payload，如{{ 7+7 }} or {7+7}，看页面上输出的内容是否为49。然后根据模板的种类选择payload。各个模板对应的paylaod如下</p>
-<p><a href="https://p5.ssl.qhimg.com/t01f4792c7d03dd49cc.png">pic</a></p>
+<p><img alt="" src="../img/SSTI1.png" /></p>
 <h3 id="2_1">2、代码审计</h3>
 <h4 id="1_2">（1）题型特征</h4>
 <p>主要见于各种CMS中，这类软件的特点是安装完成之后都会有多个类似风格的页面，这些页面通过一个固定的模板生成，需要审计模板代码获取SSTI漏洞。</p>
